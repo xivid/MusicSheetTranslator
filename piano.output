@@ -4,9 +4,11 @@ Terminals which are not used
    INTEGER
 
 
-State 1 conflicts: 4 shift/reduce, 1 reduce/reduce
-State 8 conflicts: 4 shift/reduce, 1 reduce/reduce
-State 9 conflicts: 4 shift/reduce
+State 1 conflicts: 5 shift/reduce, 1 reduce/reduce
+State 9 conflicts: 5 shift/reduce, 2 reduce/reduce
+State 10 conflicts: 5 shift/reduce
+State 12 conflicts: 5 shift/reduce, 1 reduce/reduce
+State 17 conflicts: 5 shift/reduce, 1 reduce/reduce
 
 
 Grammar
@@ -17,47 +19,54 @@ Grammar
     2     | /* empty */
 
     3 stmt: expr stmt
-    4     | /* empty */
+    4     | '^' '(' stmt ')'
+    5     | '_' '(' stmt ')'
+    6     | /* empty */
 
-    5 expr: note expr
-    6     | note '-'
-    7     | note '-' '-'
-    8     | note '-' '-' '-'
-    9     | '[' expr ']'
-   10     | /* empty */
+    7 expr: note expr
+    8     | note '-'
+    9     | note '-' '-'
+   10     | note '-' '-' '-'
+   11     | '[' expr ']'
+   12     | '(' expr ')' '-'
+   13     | '(' expr ')' '-' '-'
+   14     | '(' expr ')' '-' '-' '-'
+   15     | /* empty */
 
-   11 note: NOTE
-   12     | '_' NOTE
-   13     | '^' NOTE
+   16 note: NOTE
+   17     | '_' NOTE
+   18     | '^' NOTE
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 '\n' (10) 1
-'-' (45) 6 7 8
-'[' (91) 9
-']' (93) 9
-'^' (94) 13
-'_' (95) 12
+'(' (40) 4 5 12 13 14
+')' (41) 4 5 12 13 14
+'-' (45) 8 9 10 12 13 14
+'[' (91) 11
+']' (93) 11
+'^' (94) 4 18
+'_' (95) 5 17
 error (256)
-NOTE (258) 11 12 13
+NOTE (258) 16 17 18
 VARIABLE (259)
 INTEGER (260)
 
 
 Nonterminals, with rules where they appear
 
-$accept (12)
+$accept (14)
     on left: 0
-song (13)
+song (15)
     on left: 1 2, on right: 0 1
-stmt (14)
-    on left: 3 4, on right: 1 3
-expr (15)
-    on left: 5 6 7 8 9 10, on right: 3 5 9
-note (16)
-    on left: 11 12 13, on right: 5 6 7 8
+stmt (16)
+    on left: 3 4 5 6, on right: 1 3 4 5
+expr (17)
+    on left: 7 8 9 10 11 12 13 14 15, on right: 3 7 11 12 13 14
+note (18)
+    on left: 16 17 18, on right: 7 8 9 10
 
 
 state 0
@@ -76,21 +85,23 @@ state 1
 
     $end  shift, and go to state 2
     NOTE  shift, and go to state 3
-    '['   shift, and go to state 4
-    '_'   shift, and go to state 5
-    '^'   shift, and go to state 6
+    '^'   shift, and go to state 4
+    '('   shift, and go to state 5
+    '_'   shift, and go to state 6
+    '['   shift, and go to state 7
 
-    NOTE      [reduce using rule 10 (expr)]
-    '\n'      reduce using rule 4 (stmt)
-    '\n'      [reduce using rule 10 (expr)]
-    '['       [reduce using rule 10 (expr)]
-    '_'       [reduce using rule 10 (expr)]
-    '^'       [reduce using rule 10 (expr)]
-    $default  reduce using rule 4 (stmt)
+    NOTE      [reduce using rule 15 (expr)]
+    '\n'      reduce using rule 6 (stmt)
+    '\n'      [reduce using rule 15 (expr)]
+    '^'       [reduce using rule 15 (expr)]
+    '('       [reduce using rule 15 (expr)]
+    '_'       [reduce using rule 15 (expr)]
+    '['       [reduce using rule 15 (expr)]
+    $default  reduce using rule 6 (stmt)
 
-    stmt  go to state 7
-    expr  go to state 8
-    note  go to state 9
+    stmt  go to state 8
+    expr  go to state 9
+    note  go to state 10
 
 
 state 2
@@ -102,164 +113,329 @@ state 2
 
 state 3
 
-   11 note: NOTE .
+   16 note: NOTE .
 
-    $default  reduce using rule 11 (note)
+    $default  reduce using rule 16 (note)
 
 
 state 4
 
-    9 expr: '[' . expr ']'
+    4 stmt: '^' . '(' stmt ')'
+   18 note: '^' . NOTE
 
-    NOTE  shift, and go to state 3
-    '['   shift, and go to state 4
-    '_'   shift, and go to state 5
-    '^'   shift, and go to state 6
-
-    $default  reduce using rule 10 (expr)
-
-    expr  go to state 10
-    note  go to state 9
+    NOTE  shift, and go to state 11
+    '('   shift, and go to state 12
 
 
 state 5
 
-   12 note: '_' . NOTE
+   12 expr: '(' . expr ')' '-'
+   13     | '(' . expr ')' '-' '-'
+   14     | '(' . expr ')' '-' '-' '-'
 
-    NOTE  shift, and go to state 11
+    NOTE  shift, and go to state 3
+    '^'   shift, and go to state 13
+    '('   shift, and go to state 5
+    '_'   shift, and go to state 14
+    '['   shift, and go to state 7
+
+    $default  reduce using rule 15 (expr)
+
+    expr  go to state 15
+    note  go to state 10
 
 
 state 6
 
-   13 note: '^' . NOTE
+    5 stmt: '_' . '(' stmt ')'
+   17 note: '_' . NOTE
 
-    NOTE  shift, and go to state 12
+    NOTE  shift, and go to state 16
+    '('   shift, and go to state 17
 
 
 state 7
 
-    1 song: song stmt . '\n'
+   11 expr: '[' . expr ']'
 
-    '\n'  shift, and go to state 13
+    NOTE  shift, and go to state 3
+    '^'   shift, and go to state 13
+    '('   shift, and go to state 5
+    '_'   shift, and go to state 14
+    '['   shift, and go to state 7
+
+    $default  reduce using rule 15 (expr)
+
+    expr  go to state 18
+    note  go to state 10
 
 
 state 8
 
-    3 stmt: expr . stmt
+    1 song: song stmt . '\n'
 
-    NOTE  shift, and go to state 3
-    '['   shift, and go to state 4
-    '_'   shift, and go to state 5
-    '^'   shift, and go to state 6
-
-    NOTE      [reduce using rule 10 (expr)]
-    '\n'      reduce using rule 4 (stmt)
-    '\n'      [reduce using rule 10 (expr)]
-    '['       [reduce using rule 10 (expr)]
-    '_'       [reduce using rule 10 (expr)]
-    '^'       [reduce using rule 10 (expr)]
-    $default  reduce using rule 4 (stmt)
-
-    stmt  go to state 14
-    expr  go to state 8
-    note  go to state 9
+    '\n'  shift, and go to state 19
 
 
 state 9
 
-    5 expr: note . expr
-    6     | note . '-'
-    7     | note . '-' '-'
-    8     | note . '-' '-' '-'
+    3 stmt: expr . stmt
 
     NOTE  shift, and go to state 3
-    '-'   shift, and go to state 15
-    '['   shift, and go to state 4
-    '_'   shift, and go to state 5
-    '^'   shift, and go to state 6
+    '^'   shift, and go to state 4
+    '('   shift, and go to state 5
+    '_'   shift, and go to state 6
+    '['   shift, and go to state 7
 
-    NOTE      [reduce using rule 10 (expr)]
-    '['       [reduce using rule 10 (expr)]
-    '_'       [reduce using rule 10 (expr)]
-    '^'       [reduce using rule 10 (expr)]
-    $default  reduce using rule 10 (expr)
+    NOTE      [reduce using rule 15 (expr)]
+    '\n'      reduce using rule 6 (stmt)
+    '\n'      [reduce using rule 15 (expr)]
+    '^'       [reduce using rule 15 (expr)]
+    '('       [reduce using rule 15 (expr)]
+    ')'       reduce using rule 6 (stmt)
+    ')'       [reduce using rule 15 (expr)]
+    '_'       [reduce using rule 15 (expr)]
+    '['       [reduce using rule 15 (expr)]
+    $default  reduce using rule 6 (stmt)
 
-    expr  go to state 16
-    note  go to state 9
+    stmt  go to state 20
+    expr  go to state 9
+    note  go to state 10
 
 
 state 10
 
-    9 expr: '[' expr . ']'
+    7 expr: note . expr
+    8     | note . '-'
+    9     | note . '-' '-'
+   10     | note . '-' '-' '-'
 
-    ']'  shift, and go to state 17
+    NOTE  shift, and go to state 3
+    '^'   shift, and go to state 13
+    '('   shift, and go to state 5
+    '_'   shift, and go to state 14
+    '-'   shift, and go to state 21
+    '['   shift, and go to state 7
+
+    NOTE      [reduce using rule 15 (expr)]
+    '^'       [reduce using rule 15 (expr)]
+    '('       [reduce using rule 15 (expr)]
+    '_'       [reduce using rule 15 (expr)]
+    '['       [reduce using rule 15 (expr)]
+    $default  reduce using rule 15 (expr)
+
+    expr  go to state 22
+    note  go to state 10
 
 
 state 11
 
-   12 note: '_' NOTE .
+   18 note: '^' NOTE .
 
-    $default  reduce using rule 12 (note)
+    $default  reduce using rule 18 (note)
 
 
 state 12
 
-   13 note: '^' NOTE .
+    4 stmt: '^' '(' . stmt ')'
 
-    $default  reduce using rule 13 (note)
+    NOTE  shift, and go to state 3
+    '^'   shift, and go to state 4
+    '('   shift, and go to state 5
+    '_'   shift, and go to state 6
+    '['   shift, and go to state 7
+
+    NOTE      [reduce using rule 15 (expr)]
+    '^'       [reduce using rule 15 (expr)]
+    '('       [reduce using rule 15 (expr)]
+    ')'       reduce using rule 6 (stmt)
+    ')'       [reduce using rule 15 (expr)]
+    '_'       [reduce using rule 15 (expr)]
+    '['       [reduce using rule 15 (expr)]
+    $default  reduce using rule 6 (stmt)
+
+    stmt  go to state 23
+    expr  go to state 9
+    note  go to state 10
 
 
 state 13
+
+   18 note: '^' . NOTE
+
+    NOTE  shift, and go to state 11
+
+
+state 14
+
+   17 note: '_' . NOTE
+
+    NOTE  shift, and go to state 16
+
+
+state 15
+
+   12 expr: '(' expr . ')' '-'
+   13     | '(' expr . ')' '-' '-'
+   14     | '(' expr . ')' '-' '-' '-'
+
+    ')'  shift, and go to state 24
+
+
+state 16
+
+   17 note: '_' NOTE .
+
+    $default  reduce using rule 17 (note)
+
+
+state 17
+
+    5 stmt: '_' '(' . stmt ')'
+
+    NOTE  shift, and go to state 3
+    '^'   shift, and go to state 4
+    '('   shift, and go to state 5
+    '_'   shift, and go to state 6
+    '['   shift, and go to state 7
+
+    NOTE      [reduce using rule 15 (expr)]
+    '^'       [reduce using rule 15 (expr)]
+    '('       [reduce using rule 15 (expr)]
+    ')'       reduce using rule 6 (stmt)
+    ')'       [reduce using rule 15 (expr)]
+    '_'       [reduce using rule 15 (expr)]
+    '['       [reduce using rule 15 (expr)]
+    $default  reduce using rule 6 (stmt)
+
+    stmt  go to state 25
+    expr  go to state 9
+    note  go to state 10
+
+
+state 18
+
+   11 expr: '[' expr . ']'
+
+    ']'  shift, and go to state 26
+
+
+state 19
 
     1 song: song stmt '\n' .
 
     $default  reduce using rule 1 (song)
 
 
-state 14
+state 20
 
     3 stmt: expr stmt .
 
     $default  reduce using rule 3 (stmt)
 
 
-state 15
+state 21
 
-    6 expr: note '-' .
-    7     | note '-' . '-'
-    8     | note '-' . '-' '-'
+    8 expr: note '-' .
+    9     | note '-' . '-'
+   10     | note '-' . '-' '-'
 
-    '-'  shift, and go to state 18
+    '-'  shift, and go to state 27
 
-    $default  reduce using rule 6 (expr)
-
-
-state 16
-
-    5 expr: note expr .
-
-    $default  reduce using rule 5 (expr)
+    $default  reduce using rule 8 (expr)
 
 
-state 17
+state 22
 
-    9 expr: '[' expr ']' .
-
-    $default  reduce using rule 9 (expr)
-
-
-state 18
-
-    7 expr: note '-' '-' .
-    8     | note '-' '-' . '-'
-
-    '-'  shift, and go to state 19
+    7 expr: note expr .
 
     $default  reduce using rule 7 (expr)
 
 
-state 19
+state 23
 
-    8 expr: note '-' '-' '-' .
+    4 stmt: '^' '(' stmt . ')'
 
-    $default  reduce using rule 8 (expr)
+    ')'  shift, and go to state 28
+
+
+state 24
+
+   12 expr: '(' expr ')' . '-'
+   13     | '(' expr ')' . '-' '-'
+   14     | '(' expr ')' . '-' '-' '-'
+
+    '-'  shift, and go to state 29
+
+
+state 25
+
+    5 stmt: '_' '(' stmt . ')'
+
+    ')'  shift, and go to state 30
+
+
+state 26
+
+   11 expr: '[' expr ']' .
+
+    $default  reduce using rule 11 (expr)
+
+
+state 27
+
+    9 expr: note '-' '-' .
+   10     | note '-' '-' . '-'
+
+    '-'  shift, and go to state 31
+
+    $default  reduce using rule 9 (expr)
+
+
+state 28
+
+    4 stmt: '^' '(' stmt ')' .
+
+    $default  reduce using rule 4 (stmt)
+
+
+state 29
+
+   12 expr: '(' expr ')' '-' .
+   13     | '(' expr ')' '-' . '-'
+   14     | '(' expr ')' '-' . '-' '-'
+
+    '-'  shift, and go to state 32
+
+    $default  reduce using rule 12 (expr)
+
+
+state 30
+
+    5 stmt: '_' '(' stmt ')' .
+
+    $default  reduce using rule 5 (stmt)
+
+
+state 31
+
+   10 expr: note '-' '-' '-' .
+
+    $default  reduce using rule 10 (expr)
+
+
+state 32
+
+   13 expr: '(' expr ')' '-' '-' .
+   14     | '(' expr ')' '-' '-' . '-'
+
+    '-'  shift, and go to state 33
+
+    $default  reduce using rule 13 (expr)
+
+
+state 33
+
+   14 expr: '(' expr ')' '-' '-' '-' .
+
+    $default  reduce using rule 14 (expr)

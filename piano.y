@@ -15,6 +15,8 @@ Node* newNode(int note, int octave);
 void makeHalf(Node* head);
 void printStmt(Node* head);
 void connectNode(Node* e1, Node* e2);
+void changeOctave(Node* head, int d);
+void addDuration(Node* head, int d);
 
 const char octave[][8] = {"890qwer", "tyuiopa", "sdfghjk"};
 %}
@@ -36,6 +38,8 @@ song:
 
 stmt:
     expr stmt { $$ = $1; connectNode($1, $2); printf("reduced to a stmt, $2=%p\n", $2); }
+    | '^' '(' stmt ')' { $$ = $3; changeOctave($3, +1); printf("reduced to a ^ bracket stmt, $3=%p\n", $3); }
+    | '_' '(' stmt ')' { $$ = $3; changeOctave($3, -1); printf("reduced to a _ bracket stmt, $3=%p\n", $3); }
     | {$$ = NULL; printf("epsilon stmt\n"); }
     ;
 
@@ -45,6 +49,9 @@ expr:
     | note '-' '-' { $$ = $1; $1->duration = 3; printf("expr: %d--\n", $1->note); }
     | note '-' '-' '-' { $$ = $1; $1->duration = 4; printf("expr: %d---\n", $1->note); }
     | '[' expr ']' { $$ = $2; makeHalf($2); printf("expr: []\n"); }
+    | '(' expr ')' '-' { $$ = $2; addDuration($2, 1); printf("expr: (%p)-\n", $2); }
+    | '(' expr ')' '-' '-' { $$ = $2; addDuration($2, 2); printf("expr: (%p)--\n", $2); }
+    | '(' expr ')' '-' '-' '-' { $$ = $2; addDuration($2, 3); printf("expr: (%p)---\n", $2); }
     | { $$ = NULL; printf("epsilon expr\n"); } 
     //can identify if (ret==NULL) ..->end = .. else ..->end = ..->next->end
     ;
@@ -99,6 +106,22 @@ void connectNode(Node* e1, Node* e2) {
     if (e1 == NULL || e2 == NULL) return;
     while (p->next != NULL) p = p->next;
     p->next = e2;
+}
+
+void changeOctave(Node* head, int d) {
+    Node* p = head;
+    while (p != NULL) {
+        p->octave += d;
+        p = p->next;
+    }
+}
+
+void addDuration(Node* head, int d) {
+    Node* p = head;
+    while (p != NULL) {
+        p->duration += d;
+        p = p->next;
+    }
 }
 
 int main(void) {

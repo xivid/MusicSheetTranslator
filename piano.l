@@ -27,7 +27,7 @@ void yyerror(char *);
 [A-Z] { yylval.iVal = *yytext - 'A'; return VARIABLE; }
 
   /* operators */
-[\[\]\-_^\n] { return *yytext; }
+[\[\]()\-_^\n] { return *yytext; }
 
   /* skip whitespace */
 [ \t] ;
