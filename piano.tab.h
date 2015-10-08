@@ -41,13 +41,15 @@
    enum yytokentype {
      NOTE = 258,
      VARIABLE = 259,
-     INTEGER = 260
+     INTEGER = 260,
+     END = 261
    };
 #endif
 /* Tokens.  */
 #define NOTE 258
 #define VARIABLE 259
 #define INTEGER 260
+#define END 261
 
 
 
@@ -57,10 +59,10 @@ typedef union YYSTYPE
 #line 24 "piano.y"
 {
     int iVal;
-    Node* pNode;
+    struct node* pNode;
 }
 /* Line 1529 of yacc.c.  */
-#line 64 "piano.tab.h"
+#line 66 "piano.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

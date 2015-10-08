@@ -27,10 +27,13 @@ void yyerror(char *);
 [A-Z] { yylval.iVal = *yytext - 'A'; return VARIABLE; }
 
   /* operators */
-[\[\]()\-_^\n] { return *yytext; }
+[\[\]()\-_^] { return *yytext; }
 
   /* skip whitespace */
-[ \t] ;
+[\n \t] ;
+
+  /* end of input */
+<<EOF>> { return END; }
 
   /* anything else is an error */
 . yyerror("invalid character");

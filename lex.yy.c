@@ -369,7 +369,7 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[13] =
     {   0,
-        0,    0,    8,    6,    5,    4,    4,    2,    3,    1,
+        0,    0,    8,    6,    5,    5,    4,    2,    3,    1,
         2,    0
     } ;
 
@@ -753,31 +753,34 @@ YY_RULE_SETUP
 	YY_BREAK
 /* operators */
 case 4:
-/* rule 4 can match eol */
 YY_RULE_SETUP
 #line 30 "piano.l"
 { return *yytext; }
 	YY_BREAK
 /* skip whitespace */
 case 5:
+/* rule 5 can match eol */
 YY_RULE_SETUP
 #line 33 "piano.l"
 ;
 	YY_BREAK
+/* end of input */
+case YY_STATE_EOF(INITIAL):
+#line 36 "piano.l"
+{ return END; }
+	YY_BREAK
 /* anything else is an error */
 case 6:
 YY_RULE_SETUP
-#line 36 "piano.l"
+#line 39 "piano.l"
 yyerror("invalid character");
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 37 "piano.l"
+#line 40 "piano.l"
 ECHO;
 	YY_BREAK
-#line 779 "lex.yy.c"
-case YY_STATE_EOF(INITIAL):
-	yyterminate();
+#line 784 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1772,4 +1775,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 37 "piano.l"
+#line 40 "piano.l"

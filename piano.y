@@ -23,23 +23,30 @@ const char octave[][8] = {"890qwer", "tyuiopa", "sdfghjk"};
 
 %union {
     int iVal;
-    Node* pNode;
+    struct node* pNode;
 };
 
-%token <iVal> NOTE VARIABLE INTEGER
+%token <iVal> NOTE VARIABLE INTEGER END
 
-%type <pNode> stmt expr note
+%type <pNode> stmt expr note song
 
 %%
 song:
-    song stmt '\n' { printf("reduced to a song, output %p: \n", $2); printStmt($2); }
-    |
+    song stmt END {
+            if ($1 == NULL) $$ = $2; else {$$ = $1; connectNode($1, $2);} 
+            printf("reduced to a song, output %p: \n", $$); 
+            printStmt($$); 
+            return 0; 
+        }
+    | song stmt { if ($1 == NULL) $$ = $2; else {$$ = $1; connectNode($1, $2);} }
+    | {$$ = NULL; }
     ;
 
 stmt:
     expr stmt { $$ = $1; connectNode($1, $2); printf("reduced to a stmt, $2=%p\n", $2); }
     | '^' '(' stmt ')' { $$ = $3; changeOctave($3, +1); printf("reduced to a ^ bracket stmt, $3=%p\n", $3); }
     | '_' '(' stmt ')' { $$ = $3; changeOctave($3, -1); printf("reduced to a _ bracket stmt, $3=%p\n", $3); }
+    | '[' stmt ']' { $$ = $2; makeHalf($2); printf("reduced to a [] stmt\n"); }
     | {$$ = NULL; printf("epsilon stmt\n"); }
     ;
 
@@ -48,7 +55,6 @@ expr:
     | note '-' { $$ = $1; $1->duration = 2; printf("expr: %d-\n", $1->note); }
     | note '-' '-' { $$ = $1; $1->duration = 3; printf("expr: %d--\n", $1->note); }
     | note '-' '-' '-' { $$ = $1; $1->duration = 4; printf("expr: %d---\n", $1->note); }
-    | '[' expr ']' { $$ = $2; makeHalf($2); printf("expr: []\n"); }
     | '(' expr ')' '-' { $$ = $2; addDuration($2, 1); printf("expr: (%p)-\n", $2); }
     | '(' expr ')' '-' '-' { $$ = $2; addDuration($2, 2); printf("expr: (%p)--\n", $2); }
     | '(' expr ')' '-' '-' '-' { $$ = $2; addDuration($2, 3); printf("expr: (%p)---\n", $2); }
