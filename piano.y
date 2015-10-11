@@ -14,6 +14,7 @@ int yylex(void);
 Node* newNode(int note, int octave);
 Node* makeCopy(Node* p);
 Node* makeHalf(Node* head);
+Node* genRepetition(Node* head, int rep);
 void printStmt(Node* head);
 void connectNode(Node* e1, Node* e2);
 void changeOctave(Node* head, int d);
@@ -62,6 +63,7 @@ expr:
     | '(' expr ')' '-' '-' '-' { $$ = $2; addDuration($2, 3); printf("expr: (%p)---\n", $2); }
     | VARIABLE '=' song ';' { sym[$1] = $3; $$ = NULL; printf("received a declaration %c:", 'A'+$1); printStmt(sym[$1]); putchar('\n'); }
     | '$' VARIABLE { $$ = makeCopy(sym[$2]); }
+    | INTEGER '{' song '}' { $$ = genRepetition($3, $1); }
     | { $$ = NULL; printf("epsilon expr\n"); } 
     //can identify end of expr: if (ret==NULL) ..->end = .. else ..->end = ..->next->end
     ;
@@ -116,6 +118,36 @@ Node* makeHalf(Node* head) {
         if (p->next == NULL)
             p->ishalfend = 1;
         p = p->next;
+    }
+    return head;
+}
+
+Node* genRepetition(Node* head, int rep) {
+    int i;
+    Node *single = head, *p, *another;
+    if (head == NULL) return NULL;
+    for (i = 1; i < rep; ++i) {
+        // first node
+        if ((p = (Node*)malloc(sizeof(Node))) == NULL)
+            yyerror("out of memory");
+        another = p; // head of the new single part
+        memcpy(p, single, sizeof(Node));
+        p->next = NULL;
+        single = single->next;
+
+        while (1) {
+            if ((p->next = (Node*)malloc(sizeof(Node))) == NULL)
+                yyerror("out of memory");
+            p = p->next;
+            memcpy(p, single, sizeof(Node));
+            p->next = NULL;
+            if (single->next == NULL) {
+                single->next = another; // connect with the new part
+                single = another; // switch to another single part
+                break;
+            }
+            single = single->next;
+        }
     }
     return head;
 }

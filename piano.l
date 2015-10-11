@@ -1,7 +1,6 @@
 %{
 #include <stdlib.h>
 #include "piano.tab.h"
-//#include "node.h"
 
 void yyerror(char *);
 %}
@@ -10,7 +9,7 @@ space     [\n \t]
 integer   [0-9]+
 octave    [drmfslt]
 variable  [A-Z]
-operator  [\[\]()\-_^=;$]
+operator  [\[\](){}\-_^=;$]
 comment   #.*\n
 
 %%

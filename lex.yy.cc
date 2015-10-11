@@ -388,7 +388,7 @@ static yyconst flex_int32_t yy_ec[256] =
 
         1,    8,    1,    1,    1,    1,    1,    8,    8,    1,
         1,    1,    1,    8,    8,    8,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    5,    1,    5,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -454,10 +454,9 @@ char *yytext;
 #line 2 "piano.l"
 #include <stdlib.h>
 #include "piano.tab.h"
-//#include "node.h"
 
 void yyerror(char *);
-#line 461 "lex.yy.c"
+#line 460 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -639,10 +638,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 16 "piano.l"
+#line 15 "piano.l"
 
   /* notes */
-#line 646 "lex.yy.c"
+#line 645 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -727,7 +726,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 18 "piano.l"
+#line 17 "piano.l"
 {
   switch (*yytext) {
     case 'd': yylval.iVal = 0; break;
@@ -744,51 +743,51 @@ YY_RULE_SETUP
 /* integers */
 case 2:
 YY_RULE_SETUP
-#line 32 "piano.l"
+#line 31 "piano.l"
 { yylval.iVal = atoi(yytext); return INTEGER; }
 	YY_BREAK
 /* variables */
 case 3:
 YY_RULE_SETUP
-#line 35 "piano.l"
+#line 34 "piano.l"
 { yylval.iVal = *yytext - 'A'; return VARIABLE; }
 	YY_BREAK
 /* operators (maybe we can deal with \n and comments here) */
 case 4:
 YY_RULE_SETUP
-#line 38 "piano.l"
+#line 37 "piano.l"
 { return *yytext; }
 	YY_BREAK
 /* skip whitespace */
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 41 "piano.l"
+#line 40 "piano.l"
 ;
 	YY_BREAK
 /* end of input */
 case YY_STATE_EOF(INITIAL):
-#line 44 "piano.l"
+#line 43 "piano.l"
 { return END; }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 46 "piano.l"
+#line 45 "piano.l"
 ;
 	YY_BREAK
 /* anything else is an error */
 case 7:
 YY_RULE_SETUP
-#line 48 "piano.l"
+#line 47 "piano.l"
 yyerror(yytext);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 49 "piano.l"
+#line 48 "piano.l"
 ECHO;
 	YY_BREAK
-#line 792 "lex.yy.c"
+#line 791 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1783,4 +1782,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 49 "piano.l"
+#line 48 "piano.l"
