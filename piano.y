@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 typedef struct node{
-    int note, octave, duration;
+    int note, octave, duration; // note == -1 denotes a new line
     int ishalf, ishalfend;
     struct node* next;
 } Node;
@@ -12,6 +12,7 @@ typedef struct node{
 void yyerror(char *);
 int yylex(void);
 Node* newNode(int note, int octave);
+Node* newLine();
 Node* makeCopy(Node* p);
 Node* makeHalf(Node* head);
 Node* genRepetition(Node* head, int rep);
@@ -31,7 +32,7 @@ Node* sym[26];
 
 %token <iVal> NOTE VARIABLE INTEGER END
 
-%type <pNode> stmt expr note song
+%type <pNode> stmt expr note song newline
 
 %%
 song:
@@ -47,6 +48,7 @@ song:
 
 stmt:
     expr stmt { if ($1 == NULL) $$ = $2; else {$$ = $1; connectNode($1, $2); printf("reduced to a stmt, $2=%p\n", $2); } }
+    | expr newline stmt { connectNode($2, $3); if ($1 == NULL) $$ = $2; else {$$ = $1; connectNode($1, $2); printf("reduced to a newline stmt, $2=%p\n", $2); } }
     | '^' '(' song ')' { $$ = $3; changeOctave($3, +1); printf("reduced to a ^ bracket stmt, $3=%p\n", $3); }
     | '_' '(' song ')' { $$ = $3; changeOctave($3, -1); printf("reduced to a _ bracket stmt, $3=%p\n", $3); }
     | '[' stmt ']' { $$ = makeHalf($2); printf("reduced to a [] stmt\n"); }
@@ -72,6 +74,9 @@ note:
     NOTE { $$ = newNode($1, 1); printf("new node: %d %p\n", $1, $$); }
     | '_' NOTE { $$ = newNode($2, 0); printf("new node: %d %p\n", $2, $$); }
     | '^' NOTE { $$ = newNode($2, 2); printf("new node: %d %p\n", $2, $$); }
+
+newline:
+    '\n' { $$ = newLine(); printf("got a new line: %p\n", $$); }
 %%
 
 void yyerror(char *s) {
@@ -86,6 +91,15 @@ Node* newNode(int note, int octave) {
     p->octave = octave;
     p->duration = 1;
     p->ishalf = p->ishalfend = 0;
+    p->next = NULL;
+    return p;
+}
+
+Node* newLine() {
+    Node* p;
+    if ((p = (Node*)malloc(sizeof(Node))) == NULL)
+        yyerror("out of memory");
+    p->note = -1;
     p->next = NULL;
     return p;
 }
@@ -156,11 +170,13 @@ void printStmt(Node* head) {
     Node* p = head;
     int i;
     while (p != NULL) {
-        putchar(octave[p->octave][p->note]);
-        for (i = 1; i < p->duration; ++i)
-            putchar('-');
-        if (!p->ishalf || p->ishalfend)
-            putchar(' ');
+        if (p->octave != -1) {
+            putchar(octave[p->octave][p->note]);
+            for (i = 1; i < p->duration; ++i)
+                putchar('-');
+            if (!p->ishalf || p->ishalfend)
+                putchar(' ');
+        } else putchar('\n');
         p = p->next;
     }
 }
@@ -175,7 +191,8 @@ void connectNode(Node* e1, Node* e2) {
 void changeOctave(Node* head, int d) {
     Node* p = head;
     while (p != NULL) {
-        p->octave += d;
+        if (p->octave > -1) // avoid corrupting newline
+            p->octave += d;
         p = p->next;
     }
 }

@@ -56,7 +56,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 27 "piano.y"
+#line 28 "piano.y"
 {
     int iVal;
     struct node* pNode;

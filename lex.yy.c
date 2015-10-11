@@ -369,7 +369,7 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[16] =
     {   0,
-        0,    0,    9,    7,    5,    5,    7,    4,    2,    3,
+        0,    0,    9,    7,    5,    4,    7,    4,    2,    3,
         1,    0,    6,    2,    0
     } ;
 
@@ -754,13 +754,13 @@ YY_RULE_SETUP
 	YY_BREAK
 /* operators (maybe we can deal with \n and comments here) */
 case 4:
+/* rule 4 can match eol */
 YY_RULE_SETUP
 #line 37 "piano.l"
 { return *yytext; }
 	YY_BREAK
 /* skip whitespace */
 case 5:
-/* rule 5 can match eol */
 YY_RULE_SETUP
 #line 40 "piano.l"
 ;

@@ -5,11 +5,11 @@
 void yyerror(char *);
 %}
 
-space     [\n \t]
+space     [ \t]
 integer   [0-9]+
 octave    [drmfslt]
 variable  [A-Z]
-operator  [\[\](){}\-_^=;$]
+operator  [\n\[\](){}\-_^=;$]
 comment   #.*\n
 
 %%
