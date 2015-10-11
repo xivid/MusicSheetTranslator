@@ -5,9 +5,17 @@
 
 void yyerror(char *);
 %}
+
+space     [\n \t]
+integer   [0-9]+
+octave    [drmfslt]
+variable  [A-Z]
+operator  [\[\]()\-_^=;$]
+comment   #.*\n
+
 %%
   /* notes */
-[drmfslt] {
+{octave} {
   switch (*yytext) {
     case 'd': yylval.iVal = 0; break;
     case 'r': yylval.iVal = 1; break;
@@ -21,19 +29,20 @@ void yyerror(char *);
 }
 
   /* integers */
-[0-9]+ { yylval.iVal = atoi(yytext); return INTEGER; }
+{integer} { yylval.iVal = atoi(yytext); return INTEGER; }
 
   /* variables */
-[A-Z] { yylval.iVal = *yytext - 'A'; return VARIABLE; }
+{variable} { yylval.iVal = *yytext - 'A'; return VARIABLE; }
 
-  /* operators */
-[\[\]()\-_^] { return *yytext; }
+  /* operators (maybe we can deal with \n and comments here) */
+{operator} { return *yytext; }
 
   /* skip whitespace */
-[\n \t] ;
+{space} ;
 
   /* end of input */
 <<EOF>> { return END; }
 
+{comment} ;
   /* anything else is an error */
-. yyerror("invalid character");
+. yyerror(yytext);

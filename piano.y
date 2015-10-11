@@ -12,13 +12,15 @@ typedef struct node{
 void yyerror(char *);
 int yylex(void);
 Node* newNode(int note, int octave);
-void makeHalf(Node* head);
+Node* makeCopy(Node* p);
+Node* makeHalf(Node* head);
 void printStmt(Node* head);
 void connectNode(Node* e1, Node* e2);
 void changeOctave(Node* head, int d);
 void addDuration(Node* head, int d);
 
 const char octave[][8] = {"890qwer", "tyuiopa", "sdfghjk"};
+Node* sym[26];
 %}
 
 %union {
@@ -43,10 +45,10 @@ song:
     ;
 
 stmt:
-    expr stmt { $$ = $1; connectNode($1, $2); printf("reduced to a stmt, $2=%p\n", $2); }
-    | '^' '(' stmt ')' { $$ = $3; changeOctave($3, +1); printf("reduced to a ^ bracket stmt, $3=%p\n", $3); }
-    | '_' '(' stmt ')' { $$ = $3; changeOctave($3, -1); printf("reduced to a _ bracket stmt, $3=%p\n", $3); }
-    | '[' stmt ']' { $$ = $2; makeHalf($2); printf("reduced to a [] stmt\n"); }
+    expr stmt { if ($1 == NULL) $$ = $2; else {$$ = $1; connectNode($1, $2); printf("reduced to a stmt, $2=%p\n", $2); } }
+    | '^' '(' song ')' { $$ = $3; changeOctave($3, +1); printf("reduced to a ^ bracket stmt, $3=%p\n", $3); }
+    | '_' '(' song ')' { $$ = $3; changeOctave($3, -1); printf("reduced to a _ bracket stmt, $3=%p\n", $3); }
+    | '[' stmt ']' { $$ = makeHalf($2); printf("reduced to a [] stmt\n"); }
     | {$$ = NULL; printf("epsilon stmt\n"); }
     ;
 
@@ -58,8 +60,10 @@ expr:
     | '(' expr ')' '-' { $$ = $2; addDuration($2, 1); printf("expr: (%p)-\n", $2); }
     | '(' expr ')' '-' '-' { $$ = $2; addDuration($2, 2); printf("expr: (%p)--\n", $2); }
     | '(' expr ')' '-' '-' '-' { $$ = $2; addDuration($2, 3); printf("expr: (%p)---\n", $2); }
+    | VARIABLE '=' song ';' { sym[$1] = $3; $$ = NULL; printf("received a declaration %c:", 'A'+$1); printStmt(sym[$1]); putchar('\n'); }
+    | '$' VARIABLE { $$ = makeCopy(sym[$2]); }
     | { $$ = NULL; printf("epsilon expr\n"); } 
-    //can identify if (ret==NULL) ..->end = .. else ..->end = ..->next->end
+    //can identify end of expr: if (ret==NULL) ..->end = .. else ..->end = ..->next->end
     ;
 
 note:
@@ -84,7 +88,28 @@ Node* newNode(int note, int octave) {
     return p;
 }
 
-void makeHalf(Node* head) {
+Node* makeCopy(Node* p) {
+    Node *q = NULL, *ret = NULL;
+    if (p != NULL) {
+        // the first node, of which the pointer to be returned
+        if ((q = ret = (Node*)malloc(sizeof(Node))) == NULL)
+            yyerror("out of memory");
+        memcpy(q, p, sizeof(Node));
+        q->next = NULL;
+        p = p->next;
+    }
+    while (p != NULL) {
+        if ((q->next = (Node*)malloc(sizeof(Node))) == NULL)
+            yyerror("out of memory");
+        q = q->next;
+        memcpy(q, p, sizeof(Node));
+        q->next = NULL;
+        p = p->next;
+    }
+    return ret;
+}
+
+Node* makeHalf(Node* head) {
     Node* p = head;
     while (p != NULL) {
         p->ishalf = 1;
@@ -92,6 +117,7 @@ void makeHalf(Node* head) {
             p->ishalfend = 1;
         p = p->next;
     }
+    return head;
 }
 
 void printStmt(Node* head) {
