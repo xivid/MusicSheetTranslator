@@ -1,5 +1,6 @@
 # Makefile for Piano
 # Linus Yang
+# Modified By Yang Zhifei
 
 APP = piano
 
@@ -19,7 +20,8 @@ endif
 all: run
 
 run: $(APP)
-	./$(APP)
+	./$(APP) < piano.txt > output.txt
+	cat output.txt
 
 $(APP): $(APP).tab.o lex.yy.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
