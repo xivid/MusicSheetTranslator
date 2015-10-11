@@ -1,0 +1,29 @@
+# Samples from exam sheet
+# Arranged by Prof. Francis Lau
+# Feel free to either handle these line comments or remove them
+# 1. Happy Birthday
+[ss]ls^dt-
+[ss]ls^r^d-
+[ss]^(smd)tl-
+^([ff]mdrd---)
+#
+# 2. We Wish you a Merry Christmas
+2{
+_sd[drd_t]_(ll)
+_lr[rmrd]_(ts)
+_sm[mfmr]d_l
+[_(ss)]_lr_td-}
+
+# 3. Ode to Joy
+A=mmfssfmrddrm; # semi-colon should be here
+$A[m--r]r-
+$A[r--d]d-
+rrmdr[mf]mdr[mf]mrdr_s-
+^($A[r--d]d-)
+
+# 4. Always with Me
+S=[drmd][s--m]rsr[d_l];
+2{
+$S[m--d]_t-[d_t]_(lt)[dr]_sd[rm]f[fmrd]r-
+$S_(l[t^d]s-slt)[dr]_sd[rm]f[fmrd]d-
+}
