@@ -5,13 +5,13 @@
 void yyerror(char *);
 %}
 
-space     [ \t]
+space     [\n \t]
 integer   [0-9]+
 octave    [drmfslt]
 variable  [A-Z]
-operator  [\n\[\](){}\-_^=;$]
+operator  [\[\](){}\-_^=;$]
 comment   #.*\n
-
+%option noyywrap
 %%
   /* notes */
 {octave} {
