@@ -36,5 +36,6 @@ clean:
 	rm -f $(APP) *.o lex.yy.c 
 	rm -f $(APP).tab.c $(APP).tab.c $(APP).tab.h $(APP).output
 	rm -f output.txt
+	rm -Rf $(APP).dSYM
 
 .PHONY: all clean run
