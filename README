@@ -3,9 +3,9 @@ Piano
 By Yang Zhifei
 ---------------
 
-This is a complete implementation of prog exam 2014. I wrote, compiled and tested it on Mac OS X 10.11. The flex and bison I used to develop it is the defaultly included ones in XCode Development Tools, but I have tested that the GNU ones also work fine.
+This is a complete implementation of prog exam 2014. I wrote, compiled and tested it on Mac OS X 10.11. The flex and bison I used to develop it is the defaultly included ones in XCode Development Tools, but I have tested that the GNU ones on virtue.cs.hku.hk also work fine.
 
-The principle of my program is to store all the notes in a linked list, each node indicating a note. That is to say, a node is a struct containing all information of a note, such as name, octave and duration. To keep the purity of the linked list, I didn't store the newline characters. So none of the list nodes is for controlling output, all of them are pure notes in music, and output is done by a single method visiting the linked list from start to end.
+The main idea of my program is to store all the notes in a linked list, each node indicating a note. That is to say, a node is a struct containing all information of a note, such as name, octave and duration. To keep the purity of the linked list, I didn't store the newline characters. So none of the list nodes is for controlling output, all of them are pure notes in music, and output is done by a single method visiting the linked list from start to end.
 
 To use it, just run "make" in a shell on this directory and the generated program "piano" will read tunes from piano.txt and output keystrokes to output.txt. I modified the Makefile given by the teacher in the skeleton (but did not use the code in the skeleton, as it is too fixed to implement my own idea). The program "piano" reads from standard input and writes to standard output. It will not output anything until receiving an EOF(Ctrl+D). If you want it to handle a text file, just use IO redirecting, like "./piano < piano.txt > output.txt". 
 
@@ -15,3 +15,4 @@ My program can ignore line-comments begining with a '#', so you do not need to r
 
 I also added in piano.txt a brief score of Always with Me, which is composed by Joe Hisaishi, just because I like playing it on the piano. :) 
 
+I used git for version control, so you can easily see how I developed it step by step. Thank you for your reading!

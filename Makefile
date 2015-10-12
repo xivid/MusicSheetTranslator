@@ -6,7 +6,7 @@ APP = piano
 
 FLEX = flex
 BISON = bison
-CXX = g++
+CXX = gcc
 CXXFLAGS = -O2 -g
 LDFLAGS =
 
@@ -23,23 +23,18 @@ run: $(APP)
 	./$(APP) < piano.txt > output.txt
 	cat output.txt
 
-$(APP): $(APP).tab.o lex.yy.o
+$(APP): $(APP).tab.c lex.yy.c
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
-
-%.o: %.c
-	cp $< $<c
-	$(CXX) $(CXXFLAGS) $<c -c -o $@
 
 lex.yy.c: $(APP).l
 	$(FLEX) $<
 
 $(APP).tab.c: $(APP).y
-	$(BISON) -d -v $<
+	$(BISON) -d $<
 
 clean:
-	rm -f $(APP) *.o lex.yy.c lex.yy.cc 
-	rm -f $(APP).tab.c $(APP).tab.cc $(APP).tab.h $(APP).output
-	rm -f $(APP).mid output.txt
-	rm -Rf $(APP).dSYM
+	rm -f $(APP) *.o lex.yy.c 
+	rm -f $(APP).tab.c $(APP).tab.c $(APP).tab.h $(APP).output
+	rm -f output.txt
 
 .PHONY: all clean run
