@@ -20,7 +20,7 @@ endif
 all: run
 
 run: $(APP)
-	./$(APP) < piano.txt > output.txt
+	./$(APP) piano.txt output.txt
 	cat output.txt
 
 $(APP): $(APP).tab.c lex.yy.c

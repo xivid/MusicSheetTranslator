@@ -5,11 +5,11 @@
 void yyerror(char *);
 %}
 
-space     [\n \t]
+space     [ \t]
 integer   [0-9]+
 octave    [drmfslt]
 variable  [A-Z]
-operator  [\[\](){}\-_^=;$]
+operator  [\n\[\](){}\-_^=;$]
 comment   #.*\n
 %option noyywrap
 %%
@@ -33,7 +33,7 @@ comment   #.*\n
   /* variables */
 {variable} { yylval.iVal = *yytext - 'A'; return VARIABLE; }
 
-  /* operators (maybe we can deal with \n and comments here) */
+  /* operators */
 {operator} { return *yytext; }
 
   /* skip whitespace */
@@ -41,7 +41,9 @@ comment   #.*\n
 
   /* end of input */
 <<EOF>> { return END; }
-
+  
+  /* comments */
 {comment} ;
+
   /* anything else is an error */
 . yyerror(yytext);

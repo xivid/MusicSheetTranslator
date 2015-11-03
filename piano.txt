@@ -22,8 +22,12 @@ rrmdr[mf]mdr[mf]mrdr_s-
 ^($A[r--d]d-)
 
 # 4. Always with Me
-S=[drmd][s--m]rsr[d_l];
-2{
-$S[m--d]_t-[d_t]_(lt)[dr]_sd[rm]f[fmrd]r-
-$S_(l[t^d]s-slt)[dr]_sd[rm]f[fmrd]d-
+S=[drmd][s--m]
+rsr[d_l]; # beginning
+2{$S[m--d]_t-
+[d_t]_(lt)[dr]
+_sd[rm]f[fmrd]r-
+$S_(l[t^d]s-slt)
+[dr]_sd[rm]
+f[fmrd]d-
 }

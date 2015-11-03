@@ -12,10 +12,11 @@ typedef struct node{
 void yyerror(char *);
 int yylex(void);
 Node* newNode(int note, int octave);
+Node* newLine();
 Node* makeCopy(Node* p);
 Node* makeHalf(Node* head);
 Node* genRepetition(Node* head, int rep);
-void printStmt(Node* head);
+void printList(Node* head);
 void connectNode(Node* e1, Node* e2);
 void changeOctave(Node* head, int d);
 void addDuration(Node* head, int d);
@@ -37,7 +38,7 @@ Node* sym[26];
 song:
     song stmt END {
             if ($1 == NULL) $$ = $2; else {$$ = $1; connectNode($1, $2);} 
-            printStmt($$); 
+            printList($$); 
             return 0; 
         }
     | song stmt { if ($1 == NULL) $$ = $2; else {$$ = $1; connectNode($1, $2);} }
@@ -53,7 +54,7 @@ stmt:
     ;
 
 expr:
-    note expr { $$ = $1; $1->next = $2; }
+    note stmt { $$ = $1; $1->next = $2; }
     | note '-' { $$ = $1; $1->duration = 2; }
     | note '-' '-' { $$ = $1; $1->duration = 3; }
     | note '-' '-' '-' { $$ = $1; $1->duration = 4; }
@@ -63,6 +64,7 @@ expr:
     | VARIABLE '=' song ';' { sym[$1] = $3; $$ = NULL; }
     | '$' VARIABLE { $$ = makeCopy(sym[$2]); }
     | INTEGER '{' song '}' { $$ = genRepetition($3, $1); }
+    | '\n' { $$ = newLine(); }
     | { $$ = NULL; } 
     ;
 
@@ -84,6 +86,15 @@ Node* newNode(int note, int octave) {
     p->octave = octave;
     p->duration = 1;
     p->ishalf = p->ishalfend = 0;
+    p->next = NULL;
+    return p;
+}
+
+Node* newLine() {
+    Node *p;
+    if ((p = (Node*)malloc(sizeof(Node))) == NULL)
+        yyerror("out of memory");
+    p->note = -1;
     p->next = NULL;
     return p;
 }
@@ -150,15 +161,24 @@ Node* genRepetition(Node* head, int rep) {
     return head;
 }
 
-void printStmt(Node* head) {
+void printList(Node* head) {
     Node* p = head;
     int i;
     while (p != NULL) {
-        putchar(octave[p->octave][p->note]);
-        for (i = 1; i < p->duration; ++i)
-            putchar('-');
-        if (!p->ishalf || p->ishalfend)
-            putchar(' ');
+        if (p->note == -1)
+            putchar('\n');
+        else {
+            putchar(octave[p->octave][p->note]);
+            for (i = 1; i < p->duration; ++i)
+                putchar('-');
+            /* 
+            // uncommenting this will add a space between two [] expressions:
+            if (!p->ishalf || p->ishalfend)
+                putchar(' ');
+            */
+            if (!p->ishalf || (p->next != NULL && !p->next->ishalf))
+                putchar(' ');
+        }
         p = p->next;
     }
 }
@@ -186,7 +206,12 @@ void addDuration(Node* head, int d) {
     }
 }
 
-int main(void) {
+int main(int argc, const char* argv[]) {
+    if (argc > 1) {
+        freopen(argv[1], "r", stdin);
+        if (argc > 2) 
+            freopen(argv[2], "w", stdout);
+    }
     yyparse();
     return 0;
 }
